@@ -1,0 +1,83 @@
+/* Ensure full height and remove margin/padding */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+  }
+  
+  .hierarchy-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100%;
+    padding: 20px;
+  }
+  
+  .dashboard-title {
+    margin-top: 20px;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .search-container {
+    margin: 20px 0;
+  }
+  
+  .search-bar {
+    width: 300px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .hierarchy-container {
+    width: 100%;
+    max-width: 1200px;
+    overflow-y: auto; /* Enable scrolling if needed */
+    padding: 20px;
+    height: calc(100% - 100px);
+  }
+  
+  .employee {
+    margin: 5px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .employee.highlight {
+    background-color: #cce5ff; /* Highlight matched employee/manager */
+  }
+  
+  .employee-name {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .subordinates {
+    margin-left: 20px;
+    padding-left: 20px;
+    border-left: 2px solid #ccc;
+    margin-top: 10px;
+  }
+  
+  .subordinates .employee {
+    margin-top: 5px;
+  }
+  
+  @media (max-width: 768px) {
+    .search-bar {
+      width: 100%;
+    }
+  
+    .hierarchy-container {
+      padding: 10px;
+    }
+  }
+  

@@ -1,0 +1,291 @@
+/* Reset margin and padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Page container */
+  .dashboard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: #1a202c; /* Tailwind gray-900 */
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    padding: 40px 20px;
+    min-height: 100vh;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+  }
+  
+  /* Title styling */
+  .dashboard-title {
+    font-size: 2.2rem;
+    font-weight: 600;
+    margin-bottom: 30px;
+    color: #f1f1f1;
+    text-align: center;
+    text-transform: uppercase;
+  }
+  
+  /* Search bar container */
+  .search-container {
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 20px;
+  }
+  
+  .search-bar {
+    width: 100%;
+    padding: 12px;
+    background-color: #2d3748; /* Tailwind gray-800 */
+    color: #fff;
+    border: 1px solid #4a5568; /* Tailwind gray-700 */
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+  
+  .search-bar::placeholder {
+    color: #aaa;
+  }
+  
+  .search-bar:focus {
+    border-color: #3182ce; /* Tailwind blue-500 */
+    outline: none;
+  }
+  
+  /* Table styling */
+  .managers-table {
+    width: 100%;
+    max-width: 1000px;
+    border-collapse: collapse;
+    margin-top: 20px;
+    color: #fff;
+  }
+  
+  .managers-table th,
+  .managers-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #4a5568; /* Tailwind gray-700 */
+  }
+  
+  .managers-table th {
+    background-color: #2d3748; /* Tailwind gray-800 */
+    font-weight: bold;
+    font-size: 1.1rem;
+  }
+  
+  .managers-table tr:nth-child(even) {
+    background-color: #4a5568; /* Tailwind gray-700 */
+  }
+  
+  .managers-table tr:hover {
+    background-color: #2d3748; /* Tailwind gray-800 */
+  }
+  
+  /* Input fields in edit mode */
+  .edit-input {
+    width: 100%;
+    padding: 12px;
+    background-color: #2d3748; /* Match background color of the page */
+    color: #fff;
+    border: 1px solid #4a5568; /* Tailwind gray-700 */
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-top: 5px;
+    transition: border-color 0.3s ease;
+  }
+  
+  .edit-input:focus {
+    border-color: #3182ce; /* Tailwind blue-500 */
+    outline: none;
+  }
+  
+  /* Buttons (Update & Delete) */
+  .update-btn,
+  .delete-btn {
+    background-color: #4a5568; /* Tailwind gray-700 */
+    border: none;
+    color: #fff;
+    padding: 10px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    margin-right: 12px;
+    transition: background-color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+  }
+  
+  .update-btn:hover {
+    background-color: #2d3748; /* Tailwind gray-800 */
+  }
+  
+  .delete-btn:hover {
+    background-color: #e53e3e; /* Tailwind red-600 */
+  }
+  
+  .update-btn:focus,
+  .delete-btn:focus {
+    outline: none;
+  }
+  
+  /* Icon Styling */
+  .update-btn svg,
+  .delete-btn svg {
+    margin-right: 8px;
+  }
+  
+  /* Pagination and limit styling */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .pagination-btn {
+    background-color: #4a5568; /* Tailwind gray-700 */
+    color: #fff;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin: 0 10px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .pagination-btn:hover {
+    background-color: #2d3748; /* Tailwind gray-800 */
+  }
+  
+  .pagination-btn:disabled {
+    background-color: #a0aec0; /* Tailwind gray-400 */
+    cursor: not-allowed;
+  }
+  
+  .pagination-info {
+    font-size: 1.1rem;
+    color: #fff;
+  }
+  
+  .limit-container {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .limit-dropdown {
+    background-color: #2d3748;
+    color: #fff;
+    padding: 10px;
+    border-radius: 6px;
+    margin-left: 10px;
+    font-size: 1rem;
+  }
+  
+  .limit-dropdown:focus {
+    outline: none;
+    border-color: #3182ce;
+  }
+  
+  /* Responsive Styling */
+  @media (max-width: 768px) {
+    .dashboard-container {
+      padding: 20px;
+    }
+  
+    .search-bar {
+      padding: 10px;
+      font-size: 0.9rem;
+    }
+  
+    .managers-table {
+      width: 100%;
+      font-size: 0.9rem;
+    }
+  
+    .managers-table th,
+    .managers-table td {
+      padding: 10px;
+    }
+  
+    .pagination-btn {
+      padding: 8px 12px;
+      font-size: 0.9rem;
+    }
+  
+    .pagination-info {
+      font-size: 1rem;
+    }
+  }
+  /* Add New Manager Button */
+/* Container for Add New Manager Form */
+.add-manager-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #2d3748; /* Tailwind gray-800 */
+    padding: 20px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 30px;
+    margin-top: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Input fields for New Manager */
+  .add-manager-form input {
+    width: 100%;
+    padding: 12px;
+    background-color: #2d3748; /* Same as background */
+    color: #fff;
+    border: 1px solid #4a5568; /* Tailwind gray-700 */
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-top: 10px;
+    transition: border-color 0.3s ease;
+  }
+  
+  /* Focus state for inputs */
+  .add-manager-form input:focus {
+    border-color: #3182ce; /* Tailwind blue-500 */
+    outline: none;
+  }
+  
+  /* Save Button for New Manager */
+  .add-manager-form button {
+    background-color: #4a5568; /* Tailwind gray-700 */
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    margin-top: 20px;
+    display: inline-flex;
+    align-items: center;
+    transition: background-color 0.3s ease;
+    border: none;
+  }
+  
+  /* Save button hover effect */
+  .add-manager-form button:hover {
+    background-color: #2d3748; /* Tailwind gray-800 */
+  }
+  
+  /* Save button focus state */
+  .add-manager-form button:focus {
+    outline: none;
+  }
+  
+  /* Icon Styling */
+  .add-manager-form button svg {
+    margin-right: 8px;
+  }
+  

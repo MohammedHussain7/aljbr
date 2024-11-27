@@ -1,0 +1,101 @@
+/* Resetting margin and padding */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Container styles */
+.add-manager-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #1a202c; /* Tailwind gray-900 */
+  color: #fff; /* Light text color */
+  font-family: "Arial", sans-serif;
+}
+
+/* Title styling */
+.add-manager-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  color: #fff; /* White text */
+  text-align: center;
+}
+
+/* Form styling */
+.add-manager-form {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  max-width: 500px;
+  background-color: #2d3748; /* Tailwind gray-800 */
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Input field styling */
+.input-label {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: #ddd; /* Lighter text color */
+}
+
+.input-field {
+  padding: 0.8rem;
+  margin-bottom: 1.5rem;
+  background-color: #4a5568; /* Tailwind gray-700 */
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.input-field:focus {
+  outline: none;
+  background-color: #2d3748; /* Tailwind gray-800 */
+}
+
+/* Button styling */
+.submit-btn {
+  padding: 1rem;
+  background-color: #4a5568; /* Tailwind gray-700 */
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.submit-btn:hover {
+  background-color: #2d3748; /* Tailwind gray-800 */
+  transform: translateY(-2px);
+}
+
+.submit-btn:active {
+  transform: translateY(0);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .add-manager-title {
+    font-size: 1.5rem;
+  }
+
+  .input-field {
+    font-size: 0.9rem;
+    padding: 0.7rem;
+  }
+
+  .submit-btn {
+    font-size: 1rem;
+    padding: 0.9rem;
+  }
+}

@@ -1,0 +1,33 @@
+/* Ensure the app has no margin and padding */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Header styling */
+.App-header {
+  background-color: #333; /* Dark background for the header */
+  padding: 40px; /* Increase padding for a bigger header */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000; /* Ensure it stays on top */
+}
+
+/* Logo styling */
+.App-logo {
+  height: 200px; 
+  /* Increase height for a bigger logo */
+  width: auto;
+  margin-right: 20px;
+}
+
+/* Body content to prevent overlap with fixed header */
+.App {
+  padding-top: 140px; /* Increase padding to match the increased header size */
+}

@@ -1,0 +1,151 @@
+.dashboard-container {
+    background-color: #1a202c;
+    color: #f1f1f1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .dashboard-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .search-container {
+    margin-bottom: 20px;
+  }
+  
+  .search-bar {
+    padding: 10px;
+    font-size: 16px;
+    width: 300px;
+    border-radius: 4px;
+    border: 1px solid #444;
+    background-color: #2d3748;
+    color: #f1f1f1;
+  }
+  
+  .limit-container {
+    margin: 10px;
+  }
+  
+  .limit-dropdown {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 4px;
+    border: 1px solid #444;
+    background-color: #2d3748;
+    color: #f1f1f1;
+  }
+  
+  .add-manager-btn-container {
+    margin-top: 20px;
+  }
+  
+  .update-btn {
+    background-color: #2b6cb0;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .update-btn:hover {
+    background-color: #3182ce;
+  }
+  
+  .add-manager-form {
+    margin-top: 20px;
+    background-color: #2d3748;
+    padding: 20px;
+    border-radius: 8px;
+    width: 350px;
+  }
+  
+  .edit-input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+    border: 1px solid #444;
+    background-color: #2d3748;
+    color: #f1f1f1;
+  }
+  
+  .save-btn {
+    background-color: #48bb78;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .save-btn:hover {
+    background-color: #38a169;
+  }
+  
+  .managers-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .managers-table th, .managers-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #444;
+  }
+  
+  .managers-table th {
+    background-color: #2d3748;
+  }
+  
+  .managers-table tr:hover {
+    background-color: #444;
+  }
+  
+  .pagination-container {
+    margin-top: 20px;
+  }
+  
+
+  
+
+  /* 
+  
+  */
+  /* dashboard.css */
+.save-btn, .update-btn, .edit-btn, .delete-btn {
+    background-color: #2d3748; /* Example: green */
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+  }
+  
+  .save-btn:hover, .update-btn:hover, .edit-btn:hover, .delete-btn:hover {
+    background-color: #2d3748; /* Slightly darker green */
+  }
+  
+  .save-btn:disabled, .update-btn:disabled, .edit-btn:disabled, .delete-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .pagination-container button {
+    background-color: #2d3748;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+  }
+  
+  .pagination-container button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  

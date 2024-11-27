@@ -1,0 +1,47 @@
+.manager-actions-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #1a202c; /* Tailwind gray-900 */
+    color: #fff;
+  }
+  
+  .manager-actions-container {
+    text-align: center;
+    padding: 20px;
+    background-color: #2d3748; /* Tailwind gray-800 */
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 400px;
+  }
+  
+  .manager-actions-title {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #fff;
+  }
+  
+  .manager-actions-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .manager-button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #fff;
+    background-color: #4a5568; /* Tailwind gray-700 */
+    transition: background-color 0.3s ease;
+  }
+  
+  .manager-button:hover {
+    background-color: #2d3748; /* Tailwind gray-800 */
+  }
+  
