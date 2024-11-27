@@ -5,6 +5,7 @@ import './dashboard.css';
 const EmployeeDashboardPage = () => {
   const [employees, setEmployees] = useState([]);
   const [managers, setManagers] = useState([]);
+  const [departments, setDepartments] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [editingEmployeeId, setEditingEmployeeId] = useState(null);
   const [editedEmployee, setEditedEmployee] = useState({});
@@ -12,9 +13,17 @@ const EmployeeDashboardPage = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [limit, setLimit] = useState(10);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [newEmployee, setNewEmployee] = useState({ name: '', email: '', phone: '', department: '', managerId: '' });
+  const [selectedDepartment, setSelectedDepartment] = useState(''); // New state for the selected department
 
-  // Fetch employees and managers
+  const [newEmployee, setNewEmployee] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    department: '',
+    managerId: '',
+  });
+
+  // Fetch employees
   const fetchEmployees = async (page = 1, limit = 10) => {
     try {
       const response = await fetch(`http://localhost:5000/api/employees?page=${page}&limit=${limit}`);
@@ -27,7 +36,8 @@ const EmployeeDashboardPage = () => {
     }
   };
 
-  const fetchManagers = async () => {
+  // Fetch all managers
+  const fetchAllManagers = async () => {
     try {
       const response = await fetch('http://localhost:5000/api/managers/getAllMangers');
       const data = await response.json();
@@ -37,9 +47,21 @@ const EmployeeDashboardPage = () => {
     }
   };
 
+  // Fetch departments
+  const fetchDepartments = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/department');
+      const data = await response.json();
+      setDepartments(data);
+    } catch (error) {
+      console.error('Error fetching departments:', error);
+    }
+  };
+
   useEffect(() => {
     fetchEmployees(currentPage, limit);
-    fetchManagers();
+    fetchDepartments();
+    fetchAllManagers();
   }, [currentPage, limit]);
 
   const handleSearchChange = (e) => {
@@ -54,7 +76,7 @@ const EmployeeDashboardPage = () => {
     (employee.managerId && managers.find((manager) => manager._id === employee.managerId) &&
       managers.find((manager) => manager._id === employee.managerId).name.toLowerCase().includes(searchTerm.toLowerCase()))
   );
-  
+
   const handleDelete = async (id) => {
     try {
       const response = await fetch(`http://localhost:5000/api/employees/${id}`, { method: 'DELETE' });
@@ -119,7 +141,17 @@ const EmployeeDashboardPage = () => {
     setNewEmployee({ ...newEmployee, [name]: value });
   };
 
+  const handleDepartmentChange = (e) => {
+    const departmentId = e.target.value;
+
+    const department = e.target.value;
+    console.log(department);
+    setNewEmployee({ ...newEmployee, department, managerId: '' });
+    setSelectedDepartment(departmentId);
+  };
+
   const handleAddEmployee = async () => {
+    console.log(newEmployee); 
     try {
       const response = await fetch('http://localhost:5000/api/employees', {
         method: 'POST',
@@ -141,6 +173,17 @@ const EmployeeDashboardPage = () => {
     }
   };
 
+  // const filteredManagers = managers.filter((manager) => manager.department === newEmployee.department);
+
+  // const filteredManagers = managers.filter(
+  //   (manager) => !newEmployee.department || manager.department === newEmployee.department
+  // );
+  const filteredManagers = managers.filter(manager =>
+    !selectedDepartment || manager.department === selectedDepartment
+  );
+  console.log(selectedDepartment);
+
+
   return (
     <div className="dashboard-container">
       <h2 className="dashboard-title">Employees Dashboard</h2>
@@ -156,16 +199,6 @@ const EmployeeDashboardPage = () => {
         />
       </div>
 
-      {/* Managers Per Page Dropdown */}
-      <div className="limit-container">
-        <label htmlFor="limit">Employees per page:</label>
-        <select id="limit" value={limit} onChange={handleLimitChange} className="limit-dropdown">
-          <option value={10}>10</option>
-          <option value={20}>20</option>
-          <option value={30}>30</option>
-        </select>
-      </div>
-
       {/* Add New Employee Button */}
       <div className="add-manager-btn-container">
         <button onClick={() => setShowAddForm(!showAddForm)} className="update-btn">
@@ -173,49 +206,23 @@ const EmployeeDashboardPage = () => {
         </button>
       </div>
 
-      {/* Add New Employee Form */}
+      {/* Add Employee Form */}
       {showAddForm && (
-        <div className="add-manager-form">
-          <input
-            type="text"
-            name="name"
-            placeholder="Name"
-            value={newEmployee.name}
-            onChange={handleNewEmployeeChange}
-            className="edit-input"
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={newEmployee.email}
-            onChange={handleNewEmployeeChange}
-            className="edit-input"
-          />
-          <input
-            type="text"
-            name="phone"
-            placeholder="Phone"
-            value={newEmployee.phone}
-            onChange={handleNewEmployeeChange}
-            className="edit-input"
-          />
-          <input
-            type="text"
-            name="department"
-            placeholder="Department"
-            value={newEmployee.department}
-            onChange={handleNewEmployeeChange}
-            className="edit-input"
-          />
-          <select
-            name="managerId"
-            value={newEmployee.managerId}
-            onChange={handleNewEmployeeChange}
-            className="edit-input"
-          >
+        <div className="add-employee-form">
+          <input type="text" name="name" placeholder="Name" value={newEmployee.name} onChange={handleNewEmployeeChange} className="edit-input" />
+          <input type="email" name="email" placeholder="Email" value={newEmployee.email} onChange={handleNewEmployeeChange} className="edit-input" />
+          <input type="text" name="phone" placeholder="Phone" value={newEmployee.phone} onChange={handleNewEmployeeChange} className="edit-input" />
+          <select name="department" value={newEmployee.department} onChange={handleDepartmentChange} className="edit-input">
+            <option value="">Select Department</option>
+            {departments.map((dept) => (
+              <option key={dept._id} value={dept._id}>
+                {dept.name}
+              </option>
+            ))}
+          </select>
+          <select name="managerId" value={newEmployee.managerId} onChange={handleNewEmployeeChange} className="edit-input">
             <option value="">Select Manager</option>
-            {managers.map((manager) => (
+            {filteredManagers.map(manager => (
               <option key={manager._id} value={manager._id}>
                 {manager.name}
               </option>
@@ -239,112 +246,143 @@ const EmployeeDashboardPage = () => {
             <th>Actions</th>
           </tr>
         </thead>
-        <tbody>
-          {filteredEmployees.map((employee) => (
-            <tr key={employee._id}>
-              <td>
-                {editingEmployeeId === employee._id ? (
-                  <input
-                    type="text"
-                    name="name"
-                    value={editedEmployee.name}
-                    onChange={handleEditChange}
-                    className="edit-input"
-                  />
-                ) : (
-                  employee.name
-                )}
-              </td>
-              <td>
-                {editingEmployeeId === employee._id ? (
-                  <input
-                    type="email"
-                    name="email"
-                    value={editedEmployee.email}
-                    onChange={handleEditChange}
-                    className="edit-input"
-                  />
-                ) : (
-                  employee.email
-                )}
-              </td>
-              <td>
-                {editingEmployeeId === employee._id ? (
-                  <input
-                    type="text"
-                    name="phone"
-                    value={editedEmployee.phone}
-                    onChange={handleEditChange}
-                    className="edit-input"
-                  />
-                ) : (
-                  employee.phone
-                )}
-              </td>
-              <td>
-                {editingEmployeeId === employee._id ? (
-                  <input
-                    type="text"
-                    name="department"
-                    value={editedEmployee.department}
-                    onChange={handleEditChange}
-                    className="edit-input"
-                  />
-                ) : (
-                  employee.department
-                )}
-              </td>
-              <td>
-                {editingEmployeeId === employee._id ? (
-                  <select
-                    name="managerId"
-                    value={editedEmployee.managerId}
-                    onChange={handleEditChange}
-                    className="edit-input"
-                  >
-                    <option value="">Select Manager</option>
-                    {managers.map((manager) => (
-                      <option key={manager._id} value={manager._id}>
-                        {manager.name}
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  employee.managerId
-                    ? managers.find((manager) => manager._id === employee.managerId)?.name || 'N/A'
-                    : 'N/A'
-                )}
-              </td>
-              <td>
-                {editingEmployeeId === employee._id ? (
-                  <button onClick={handleSave} className="save-btn">
-                    <FaSave />
-                  </button>
-                ) : (
-                  <>
-                    <button onClick={() => handleEdit(employee)} className="edit-btn">
-                      <FaEdit />
-                    </button>
-                    <button onClick={() => handleDelete(employee._id)} className="delete-btn">
-                      <FaTrashAlt />
-                    </button>
-                  </>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
+       <tbody>
+  {filteredEmployees.map((employee) => (
+    <tr key={employee._id}>
+      <td>
+        {editingEmployeeId === employee._id ? (
+          <input
+            type="text"
+            name="name"
+            value={editedEmployee.name || ""}
+            onChange={handleEditChange}
+            className="edit-input"
+          />
+        ) : (
+          employee.name
+        )}
+      </td>
+      <td>
+        {editingEmployeeId === employee._id ? (
+          <input
+            type="email"
+            name="email"
+            value={editedEmployee.email || ""}
+            onChange={handleEditChange}
+            className="edit-input"
+          />
+        ) : (
+          employee.email
+        )}
+      </td>
+      <td>
+        {editingEmployeeId === employee._id ? (
+          <input
+            type="text"
+            name="phone"
+            value={editedEmployee.phone || ""}
+            onChange={handleEditChange}
+            className="edit-input"
+          />
+        ) : (
+          employee.phone
+        )}
+      </td>
+      <td>
+        {editingEmployeeId === employee._id ? (
+          <select
+            name="department"
+            value={editedEmployee.department || ""}
+            onChange={handleEditChange}
+            className="edit-input"
+          >
+            <option value="">Select Department</option>
+            {departments.map((dept) => (
+              <option key={dept._id} value={dept._id}>
+                {dept.name}
+              </option>
+            ))}
+          </select>
+        ) : (
+          departments.find((dept) => dept._id === employee.department)?.name ||
+          "No Department"
+        )}
+      </td>
+      <td>
+        {editingEmployeeId === employee._id ? (
+          <select
+            name="managerId"
+            value={editedEmployee.managerId || ""}
+            onChange={handleEditChange}
+            className="edit-input"
+          >
+            <option value="">No Manager</option>
+            {managers.map((mgr) => (
+              <option key={mgr._id} value={mgr._id}>
+                {mgr.name}
+              </option>
+            ))}
+          </select>
+        ) : (
+          managers.find((mgr) => mgr._id === employee.managerId)?.name ||
+          "No Manager"
+        )}
+      </td>
+      <td>
+        {editingEmployeeId === employee._id ? (
+          <>
+            <button onClick={handleSave} className="save-btn">
+              <FaSave /> Save
+            </button>
+            <button
+              onClick={() => setEditingEmployeeId(null)}
+              className="cancel-btn"
+            >
+              Cancel
+            </button>
+          </>
+        ) : (
+          <>
+            <button onClick={() => handleEdit(employee)} className="delete-btn">
+              <FaEdit /> 
+            </button>
+            <button
+              onClick={() => handleDelete(employee._id)}
+              className="delete-btn"
+            >
+              <FaTrashAlt /> 
+            </button>
+          </>
+        )}
+      </td>
+    </tr>
+  ))}
+</tbody>
+
       </table>
 
-      {/* Pagination Controls */}
+      {/* Pagination */}
       <div className="pagination-container">
         <button onClick={() => handlePageChange(currentPage - 1)} disabled={isPrevDisabled}>
-          Prev
+          Previous
         </button>
-        <span>Page {currentPage} of {totalPages}</span>
+        <span>
+          Page {currentPage} of {totalPages}
+        </span>
         <button onClick={() => handlePageChange(currentPage + 1)} disabled={isNextDisabled}>
           Next
         </button>
+      </div>
+
+      {/* Limit Selector */}
+      <div className="limit-selector color">
+        <span className='white'>Rows per page: </span>
+        <select value={limit} onChange={handleLimitChange}>
+          <option value={5}>5</option>
+          <option value={10}>10</option>
+          <option value={20}>20</option>
+          <option value={50}>50</option>
+        </select>
       </div>
     </div>
   );

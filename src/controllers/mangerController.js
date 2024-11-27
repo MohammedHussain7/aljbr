@@ -2,6 +2,16 @@ const mongoose = require('mongoose');
 const Manager = require('../models/Manager');
 const Employee = require('../models/Employee');
 
+
+exports.getAllManagers = async (req, res) => {
+  try {
+    const managers = await Manager.find();
+    res.status(200).json(managers);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching mana', error });
+  }
+};
+
 // Get all managers or filter by manager ID (optional)
 exports.getManagers = async (req, res) => {
   try {
@@ -43,14 +53,26 @@ exports.getManagerById = async (req, res) => {
 
 // Add a new manager
 exports.addManager = async (req, res) => {
+  console.log(req.body);
+
+  // If managerId is not provided, we don't include it in the manager object
+  const managerData = {
+    name: req.body.name,
+    email: req.body.email,
+    phone: req.body.phone,
+    department: req.body.department,
+    managerId: req.body.managerId || undefined, // If managerId is not provided, set it to undefined
+  };
+
   try {
-    const manager = new Manager(req.body);
+    const manager = new Manager(managerData);
     await manager.save();
     res.status(201).json(manager);
   } catch (error) {
     res.status(500).json({ message: 'Error creating manager', error });
   }
 };
+
 
 // Update an existing manager
 exports.updateManager = async (req, res) => {
@@ -93,3 +115,21 @@ exports.getEmployeesByManager = async (req, res) => {
     res.status(500).json({ message: 'Error getting employees for manager', error });
   }
 };
+// const Department = require('../models/Department'); // Assuming you have a Department model
+
+exports.getManagersByDepartment = async (req, res) => {
+  const { department } = req.params;
+
+  try {
+    // Step 1: Find the department by its name to get its ID
+
+
+    // Step 3: Fetch managers based on the department's ID
+    const managers = await Manager.find({ department: department });
+
+    res.status(200).json({ managers });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching managers', error });
+  }
+};
+ 

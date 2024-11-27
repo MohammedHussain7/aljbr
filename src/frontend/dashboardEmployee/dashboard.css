@@ -123,7 +123,7 @@
     background-color: #2d3748; /* Example: green */
     color: white;
     border: none;
-    padding: 8px 16px;
+    padding: 16px 16px;
     cursor: pointer;
   }
   
@@ -148,4 +148,50 @@
     background-color: #ccc;
     cursor: not-allowed;
   }
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
   
+  .dropdown-btn {
+    background-color: #f1f1f1;
+    color: #333;
+    padding: 10px 15px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+  }
+  
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    min-width: 100%;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    overflow-y: auto;
+    max-height: 150px;
+  }
+  
+  .dropdown-content .dropdown-item {
+    padding: 10px;
+    cursor: pointer;
+    color: #333;
+  }
+  
+  .dropdown-content .dropdown-item:hover {
+    background-color: #ddd;
+  }
+  
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+  .color{
+    color:#1a202c
+  }
+  .white{
+    color:#f1f1f1
+  }

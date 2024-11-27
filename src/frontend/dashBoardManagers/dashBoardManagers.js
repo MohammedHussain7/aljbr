@@ -1,19 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { FaEdit, FaTrashAlt, FaSave, FaPlus } from 'react-icons/fa'; // Importing icons for update, delete, save, and add
-import './dashboard.css'; // Import the custom CSS file
+import { FaEdit, FaTrashAlt, FaSave, FaPlus } from 'react-icons/fa';
+import './dashboard.css';
 
 const DashboardPage = () => {
   const [managers, setManagers] = useState([]);
+  const [departments, setDepartments] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [editingManagerId, setEditingManagerId] = useState(null); // To track which manager is being edited
-  const [editedManager, setEditedManager] = useState({}); // To store the manager's updated data
-  const [currentPage, setCurrentPage] = useState(1); // Track current page for pagination
-  const [totalPages, setTotalPages] = useState(1); // Track total pages
-  const [limit, setLimit] = useState(10); // Managers per page
-  const [showAddForm, setShowAddForm] = useState(false); // Toggle for showing the add form
-  const [newManager, setNewManager] = useState({ name: '', email: '', phone: '', department: '', managerId: '' }); // New manager data
-
-  // Fetch managers with pagination
+  const [editingManagerId, setEditingManagerId] = useState(null);
+  const [editedManager, setEditedManager] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newManager, setNewManager] = useState({ name: '', email: '', phone: '', department: '', managerId: '' });
+  const [selectedDepartment, setSelectedDepartment] = useState(''); // New state for the selected department
+  const [modalVisible, setModalVisible] = useState(false); // State for modal visibility
+  const [employeeList, setEmployeeList] = useState([]); // State for employee list
+  // Fetch managers and departments
   const fetchManagers = async (page = 1, limit = 10) => {
     try {
       const response = await fetch(`http://localhost:5000/api/managers/getAllMangers?page=${page}&limit=${limit}`);
@@ -26,16 +29,27 @@ const DashboardPage = () => {
     }
   };
 
+  const fetchDepartments = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/department');
+      const data = await response.json();
+      setDepartments(data); // Assuming the response is an array of departments
+    } catch (error) {
+      console.error('Error fetching departments:', error);
+    }
+  };
+
   useEffect(() => {
-    fetchManagers(currentPage, limit); // Fetch managers when the component loads or page changes
-  }, [currentPage, limit]); // Dependency on currentPage and limit to refetch data when changed
+    fetchManagers(currentPage, limit); // Fetch managers on load
+    fetchDepartments(); // Fetch departments on load
+  }, [currentPage, limit]);
 
   // Handle search input change
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
 
-  // Filter managers based on search term (search across multiple fields)
+  // Filter managers based on search term
   const filteredManagers = managers.filter((manager) =>
     manager.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     manager.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -43,7 +57,7 @@ const DashboardPage = () => {
     manager.department.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Handle delete manager (This should be an actual delete request to your API)
+  // Handle delete manager
   const handleDelete = async (id) => {
     try {
       const response = await fetch(`http://localhost:5000/api/managers/${id}`, {
@@ -52,7 +66,7 @@ const DashboardPage = () => {
 
       if (response.ok) {
         alert('Manager deleted successfully!');
-        fetchManagers(currentPage, limit); // Refresh the page after delete
+        fetchManagers(currentPage, limit);
       } else {
         alert('Failed to delete manager');
       }
@@ -61,7 +75,28 @@ const DashboardPage = () => {
       alert('Failed to delete manager');
     }
   };
+  const handleShow = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/managers/${id}/employees`, {
+        method: 'GET',
+      });
 
+      if (response.ok) {
+        const data = await response.json();
+        if (data && data.length > 0) {
+          setEmployeeList(data); // Store the employee list
+          setModalVisible(true); // Show the modal
+        } else {
+          alert('No employees reported by this manager.');
+        }
+      } else {
+        alert('Failed to fetch employees for this manager.');
+      }
+    } catch (error) {
+      console.error('Error getting manager:', error);
+      alert('An error occurred while fetching employees for this manager.');
+    }
+  };
   // Handle editing input change
   const handleEditChange = (e) => {
     const { name, value } = e.target;
@@ -74,7 +109,7 @@ const DashboardPage = () => {
   // Start editing a manager
   const handleEdit = (manager) => {
     setEditingManagerId(manager._id);
-    setEditedManager(manager); // Set the manager data in the edited state
+    setEditedManager(manager);
   };
 
   // Save edited manager data
@@ -90,7 +125,7 @@ const DashboardPage = () => {
 
       if (response.ok) {
         alert('Manager updated successfully!');
-        fetchManagers(currentPage, limit); // Refresh the page after update
+        fetchManagers(currentPage, limit);
         setEditingManagerId(null); // Reset editing state
       } else {
         alert('Failed to update manager');
@@ -121,10 +156,20 @@ const DashboardPage = () => {
     });
   };
 
+  // Handle department change for new manager
+  const handleDepartmentChange = (e) => {
+    const departmentId = e.target.value;
+    setNewManager({
+      ...newManager,
+      department: departmentId,
+    });
+    setSelectedDepartment(departmentId); // Update selected department
+  };
+
   // Add a new manager
   const handleAddManager = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/managers', {
+      const response = await fetch('http://localhost:5000/api/managers/addManger', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -134,9 +179,9 @@ const DashboardPage = () => {
 
       if (response.ok) {
         alert('New manager added successfully!');
-        fetchManagers(currentPage, limit); // Refresh the list after adding
-        setShowAddForm(false); // Close the add form
-        setNewManager({ name: '', email: '', phone: '', department: '', managerId: '' }); // Reset form
+        fetchManagers(currentPage, limit);
+        setShowAddForm(false);
+        setNewManager({ name: '', email: '', phone: '', department: '', managerId: '' });
       } else {
         alert('Failed to add manager');
       }
@@ -145,6 +190,11 @@ const DashboardPage = () => {
       alert('Failed to add manager');
     }
   };
+
+  // Filter managers to show only those in the selected department
+  const filteredManagersByDepartment = managers.filter(manager =>
+    !selectedDepartment || manager.department === selectedDepartment
+  );
 
   return (
     <div className="dashboard-container">
@@ -203,14 +253,19 @@ const DashboardPage = () => {
             onChange={handleNewManagerChange}
             className="edit-input"
           />
-          <input
-            type="text"
+          <select
             name="department"
-            placeholder="Department"
             value={newManager.department}
-            onChange={handleNewManagerChange}
+            onChange={handleDepartmentChange} // Update department
             className="edit-input"
-          />
+          >
+            <option value="">Select Department</option>
+            {departments.map(department => (
+              <option key={department._id} value={department._id}>
+                {department.name}
+              </option>
+            ))}
+          </select>
           <select
             name="managerId"
             value={newManager.managerId}
@@ -218,7 +273,7 @@ const DashboardPage = () => {
             className="edit-input"
           >
             <option value="">No manager</option>
-            {managers.map(manager => (
+            {filteredManagersByDepartment.map(manager => (
               <option key={manager._id} value={manager._id}>
                 {manager.name}
               </option>
@@ -237,7 +292,7 @@ const DashboardPage = () => {
             <th>Email</th>
             <th>Phone</th>
             <th>Department</th>
-            <th>Manager</th> {/* New column for manager */}
+            <th>Manager</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -247,15 +302,34 @@ const DashboardPage = () => {
               <td>{editingManagerId === manager._id ? <input type="text" name="name" value={editedManager.name} onChange={handleEditChange} className="edit-input" /> : manager.name}</td>
               <td>{editingManagerId === manager._id ? <input type="email" name="email" value={editedManager.email} onChange={handleEditChange} className="edit-input" /> : manager.email}</td>
               <td>{editingManagerId === manager._id ? <input type="text" name="phone" value={editedManager.phone} onChange={handleEditChange} className="edit-input" /> : manager.phone}</td>
-              <td>{editingManagerId === manager._id ? <input type="text" name="department" value={editedManager.department} onChange={handleEditChange} className="edit-input" /> : manager.department}</td>
-              <td>{editingManagerId === manager._id ? <select name="managerId" value={editedManager.managerId} onChange={handleEditChange} className="edit-input">
-                <option value="">No manager</option>
-                {managers.map(manager => (
-                  <option key={manager._id} value={manager._id}>
-                    {manager.name}
-                  </option>
-                ))}
-              </select> : manager.managerId ? managers.find(mgr => mgr._id === manager.managerId)?.name : 'No manager'}</td>
+              <td>
+                {editingManagerId === manager._id ? (
+                  <select name="department" value={editedManager.department} onChange={handleEditChange} className="edit-input">
+                    <option value="">Select Department</option>
+                    {departments.map(department => (
+                      <option key={department._id} value={department._id}>
+                        {department.name}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  departments.find(department => department._id === manager.department)?.name || 'No department'
+                )}
+              </td>
+              <td>
+                {editingManagerId === manager._id ? (
+                  <select name="managerId" value={editedManager.managerId} onChange={handleEditChange} className="edit-input">
+                    <option value="">No manager</option>
+                    {managers.map(manager => (
+                      <option key={manager._id} value={manager._id}>
+                        {manager.name}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  manager.managerId ? managers.find(mgr => mgr._id === manager.managerId)?.name : 'No manager'
+                )}
+              </td>
               <td>
                 {editingManagerId === manager._id ? (
                   <button className="save-btn" onClick={handleSave}>
@@ -266,9 +340,30 @@ const DashboardPage = () => {
                     <button className="update-btn" onClick={() => handleEdit(manager)}>
                       <FaEdit /> {/* Update Icon */}
                     </button>
-                    <button className="delete-btn" onClick={() => handleDelete(manager._id)}>
+                    <button className="update-btn" onClick={() => handleDelete(manager._id)}>
                       <FaTrashAlt /> {/* Delete Icon */}
                     </button>
+                      
+                    <button className="update-btn padding" onClick={() => handleShow(manager._id)}>
+                      Show Employees {/* Delete Icon */}
+                    </button>
+                    {modalVisible && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>Employees reported by this manager:</h3>
+            <ul>
+              {employeeList.map((employee, index) => (
+                <li key={employee._id}>
+                  {index + 1}. {employee.name}
+                </li>
+              ))}
+            </ul>
+            <button onClick={() => setModalVisible(false)} className="close-btn">
+              Close
+            </button>
+          </div>
+        </div>
+      )}
                   </>
                 )}
               </td>

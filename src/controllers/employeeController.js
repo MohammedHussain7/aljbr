@@ -1,5 +1,6 @@
 const Employee = require('../models/Employee');
 const Manager = require('../models/Manager');
+const Department = require('../models/Department'); // Assuming you have a Department model
 
 // Get all employees
 
@@ -44,13 +45,14 @@ exports.getEmployeeById = async (req, res) => {
 };
 
 // Add a new employee
+
+
 exports.addEmployee = async (req, res) => {
   try {
-    const  managerId  = req.body.managerId;
-    console.log(managerId);
-   
+    const { managerId, department, ...employeeData } = req.body;
+    console.log(req.body);
 
-    // Check if the manager exists (if managerId is provided)
+    // Step 1: Check if the manager exists (if managerId is provided)
     if (managerId) {
       const manager = await Manager.findById(managerId);
       if (!manager) {
@@ -58,14 +60,22 @@ exports.addEmployee = async (req, res) => {
       }
     }
 
-    const employee = new Employee(req.body);
+
+
+    // Step 3: Create the new employee with the departmentId and managerId
+    const employee = new Employee({
+      ...employeeData, 
+      department: departmentDoc, // Store departmentId
+      managerId: managerId || null // Store managerId, or null if not provided
+    });
+
     await employee.save();
     res.status(201).json(employee); 
+
   } catch (error) {
     res.status(500).json({ message: 'Error creating employee', error });
   }
 };
-
 // Update an existing employee
 exports.updateEmployee = async (req, res) => {
   try {
