@@ -5,16 +5,22 @@
   box-sizing: border-box;
 }
 
+/* Body styling */
+body {
+  background-color: #1a202c; /* Tailwind gray-900 */
+  font-family: "Arial", sans-serif;
+  color: #fff;
+}
+
 /* Container styles */
 .container {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background-color: #1a202c; /* Tailwind gray-900 */
-  font-family: "Arial", sans-serif;
-  color: #fff;
+  align-items: center; /* Horizontally centers content */
+  justify-content: center; /* Vertically centers content */
+  text-align: center; /* Centers text in the container */
+  padding: 20px; /* Optional: Add padding to avoid edges touching */
 }
 
 /* Title styling */
@@ -30,6 +36,9 @@
   display: flex;
   gap: 20px; /* Increased space between buttons */
   justify-content: center; /* Align buttons to center */
+  flex-wrap: wrap; /* Allows buttons to wrap on small screens */
+  width: 100%; /* Ensures the container takes full width */
+  justify-content: center; /* Center buttons horizontally */
 }
 
 /* Button styling */
@@ -45,6 +54,7 @@
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
+/* Button hover effect */
 .btn:hover {
   background-color: #2d3748; /* Tailwind gray-800 */
   transform: translateY(-3px);
@@ -67,6 +77,4 @@
     gap: 1rem;
   }
 }
-body{
-  background-color: #1a202c;
-}
+ 

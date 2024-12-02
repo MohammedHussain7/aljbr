@@ -282,7 +282,7 @@ const DashboardPage = () => {
       {/* Add New Manager Button */}
       <div className="add-manager-btn-container">
         <button onClick={() => setShowAddForm(!showAddForm)} className="update-btn">
-          <FaPlus /> Add New Manager
+          <FaPlus /> Add
         </button>
       </div>
 
