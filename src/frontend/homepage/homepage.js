@@ -6,7 +6,7 @@ const Homepage = () => {
 
 
  const handleManager = () => {
-    navigate("/dashboard-managers");
+    navigate("/dashboard-managers"); 
   };  
   const handleEmployee = () => {
     navigate("/dashboard-employees");
@@ -21,8 +21,7 @@ const Homepage = () => {
     <div className="container">
       <h1 className="title">Manage Employees and Managers</h1>
       <div className="button-container">
-        <button onClick={handleManager} className="btn add-manager">Manager</button>
-        <button onClick={handleEmployee} className="btn add-employee">Employee</button>
+        <button onClick={handleManager} className="btn add-manager">Show All Managers or Employees</button>
       </div>
       <br />
       <div className="button-container">

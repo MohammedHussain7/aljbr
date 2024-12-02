@@ -12,10 +12,15 @@ const DashboardPage = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [limit, setLimit] = useState(10);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [newManager, setNewManager] = useState({ name: '', email: '', phone: '', department: '', managerId: '' });
+  const [newManager, setNewManager] = useState({ name: '', email: '', phone: '', department: '', managerId: '' , role: ''});  
   const [selectedDepartment, setSelectedDepartment] = useState(''); // New state for the selected department
+  const [selectedRole, setSelectedRole] = useState(''); // New state for the selected department
   const [modalVisible, setModalVisible] = useState(false); // State for modal visibility
   const [employeeList, setEmployeeList] = useState([]); // State for employee list
+  // const [role, setRole] = useState(''); // State for role
+  const allRoles = [ 'Manager', 'Employee']; // All possible roles
+  const mongoose = require('mongoose');
+
   // Fetch managers and departments
   const fetchManagers = async (page = 1, limit = 10) => {
     try {
@@ -50,12 +55,57 @@ const DashboardPage = () => {
   };
 
   // Filter managers based on search term
-  const filteredManagers = managers.filter((manager) =>
-    manager.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    manager.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    manager.phone.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    manager.department.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // const filteredManagers = managers.filter((manager) =>
+  //   manager.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //   manager.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //   manager.phone.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //   manager.department.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
+  const filteredManagers = managers.filter((manager) => {
+    // Lowercase the search term for case-insensitive comparison
+    const searchLower = searchTerm.toLowerCase();
+  
+    // Check if the manager's fields match the search term, adding safety checks
+    const matchesName = manager.name?.toLowerCase().includes(searchLower);
+    const matchesEmail = manager.email?.toLowerCase().includes(searchLower);
+    const matchesPhone = manager.phone?.toLowerCase().includes(searchLower);
+    const matchesRole = manager.role?.toLowerCase().includes(searchLower);
+    const matchesManager = manager.managerId && 
+    managers.some((otherManager) => {
+      const isMatchingId = (manager.managerId instanceof mongoose.Types.ObjectId && 
+        otherManager._id instanceof mongoose.Types.ObjectId) 
+        ? otherManager._id.equals(manager.managerId) 
+        : otherManager._id.toString() === manager.managerId.toString();
+        
+      return isMatchingId && 
+        otherManager.name.toLowerCase().includes(searchTerm.toLowerCase());
+    });
+    const matchesDepartment = departments.some((department) => {
+      // Check if the department matches by _id and search term in department name
+      const isMatch = department._id.toString() === manager.department.toString() && 
+                      department.name.toLowerCase().includes(searchLower);
+    
+      if (isMatch) {
+        console.log('matchesManager:', department.name);  // Log department name when there's a match
+      }
+    
+      return isMatch;
+    });
+  
+    // Check if the managerId name matches (if managerId exists)
+    // const matchesManager = manager.managerId?.name?.toLowerCase().includes(searchLower);
+  
+    return (
+      matchesName ||
+      matchesEmail ||
+      matchesPhone ||
+      matchesRole ||
+      matchesDepartment ||
+      matchesManager
+    );
+  });
+  
+  
 
   // Handle delete manager
   const handleDelete = async (id) => {
@@ -122,7 +172,7 @@ const DashboardPage = () => {
         },
         body: JSON.stringify(editedManager),
       });
-
+  
       if (response.ok) {
         alert('Manager updated successfully!');
         fetchManagers(currentPage, limit);
@@ -135,6 +185,7 @@ const DashboardPage = () => {
       alert('Failed to update manager');
     }
   };
+  
 
   // Handle page change
   const handlePageChange = (page) => {
@@ -165,6 +216,15 @@ const DashboardPage = () => {
     });
     setSelectedDepartment(departmentId); // Update selected department
   };
+  const handleRoleChange = (e) => {
+    const role = e.target.value;
+    setNewManager({
+      ...newManager,
+      role: role,
+    });
+    setSelectedRole(role); // Update selected department
+  };
+  
 
   // Add a new manager
   const handleAddManager = async () => {
@@ -181,7 +241,7 @@ const DashboardPage = () => {
         alert('New manager added successfully!');
         fetchManagers(currentPage, limit);
         setShowAddForm(false);
-        setNewManager({ name: '', email: '', phone: '', department: '', managerId: '' });
+        setNewManager({ name: '', email: '', phone: '', department: '', managerId: '', role: '' }); // Reset form
       } else {
         alert('Failed to add manager');
       }
@@ -198,7 +258,7 @@ const DashboardPage = () => {
 
   return (
     <div className="dashboard-container">
-      <h2 className="dashboard-title">Managers Dashboard</h2>
+      <h2 className="dashboard-title">Dashboard</h2>
 
       <div className="search-container">
         <input
@@ -254,6 +314,19 @@ const DashboardPage = () => {
             className="edit-input"
           />
           <select
+            name="role"
+            value={newManager.role}
+            onChange={handleRoleChange} // Update department
+            className="edit-input"
+          >
+            <option value="">Select Role</option>
+            {allRoles.map(role => (
+              <option key={role} value={role}>
+                {role}
+              </option>
+            ))}
+          </select>
+          <select
             name="department"
             value={newManager.department}
             onChange={handleDepartmentChange} // Update department
@@ -293,6 +366,7 @@ const DashboardPage = () => {
             <th>Phone</th>
             <th>Department</th>
             <th>Manager</th>
+            <th>Role</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -330,6 +404,26 @@ const DashboardPage = () => {
                   manager.managerId ? managers.find(mgr => mgr._id === manager.managerId)?.name : 'No manager'
                 )}
               </td>
+              <td>
+  {editingManagerId === manager._id ? (
+    <select
+      name="role"
+      value={editedManager.role}
+      onChange={handleEditChange}
+      className="edit-input"
+    >
+      <option value="">Select Role</option>
+      {allRoles.map((role) => (
+        <option key={role} value={role}>
+          {role}
+        </option>
+      ))}
+    </select>
+  ) : (
+    manager.role || 'No role'
+  )}
+</td>
+
               <td>
                 {editingManagerId === manager._id ? (
                   <button className="save-btn" onClick={handleSave}>

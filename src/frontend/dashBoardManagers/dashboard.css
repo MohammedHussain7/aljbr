@@ -59,10 +59,10 @@
   /* Table styling */
   .managers-table {
     width: 100%;
-    max-width: 1000px;
+    max-width: 1000px; 
     border-collapse: collapse;
     margin-top: 20px;
-    color: #fff;
+    color: #fff; 
   }
   
   .managers-table th,

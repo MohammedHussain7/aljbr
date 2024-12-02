@@ -17,7 +17,6 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Import router
 import Homepage from './frontend/homepage/homepage';
 import DashboardPage from './frontend/dashBoardManagers/dashBoardManagers';
-import EmployeeDashboardPage from './frontend/dashboardEmployee/dashboardEmployee';
 import HierarchyChartPage from './frontend/employeeHierarchyPage/employeeHierarchyPage';
 import DepartmentDashboardPage from './frontend/dashboardDepartment/dashboardDepartment';
 
@@ -28,7 +27,6 @@ function App() {
         <Route path="/" element={<Homepage />} />
         <Route path="/dashboard-managers" element={<DashboardPage />} />
         <Route path="/dashboard-department" element={<DepartmentDashboardPage />} />
-        <Route path="/dashboard-employees" element={<EmployeeDashboardPage />} />
         <Route path="/hierarchy-page" element={<HierarchyChartPage />} />
       </Routes>
     </Router>
