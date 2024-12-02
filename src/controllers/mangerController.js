@@ -135,12 +135,11 @@
  
 const mongoose = require('mongoose');
 const Manager = require('../models/Manager');
-const Employee = require('../models/Employee');
 
 // Get all managers
 exports.getAllManagers = async (req, res) => {
   try {
-    const managers = await Manager.find();
+    const managers = await Manager.find(); 
     res.status(200).json(managers);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching managers', error });

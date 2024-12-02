@@ -4,7 +4,6 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const managerRoutes = require('./routes/managerRoute'); // Manager routes
-const employeeRoutes = require('./routes/employeeRoute'); // Employee routes
 const hierachyRoutes = require('./routes/hierachyRoute'); // Hierarchy routes
 const departmentRoutes = require('./routes/departmentRoute'); // Hierarchy routes
 
@@ -21,7 +20,6 @@ mongoose.connect('mongodb://localhost:27017/organization', { useNewUrlParser: tr
 
 // Routes
 app.use('/api/managers', managerRoutes);
-app.use('/api/employees', employeeRoutes);
 app.use('/api/hierarchy', hierachyRoutes);
 app.use('/api/department', departmentRoutes);
 
